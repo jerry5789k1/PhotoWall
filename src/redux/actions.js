@@ -19,7 +19,6 @@ export function startLoadingPost(){
             snapshot.forEach((childSnapshot) => {
                 posts.push(childSnapshot.val())
             })
-            console.log(posts)
             dispatch(loadPosts(posts))
         })
 
@@ -28,11 +27,19 @@ export function startLoadingPost(){
     } 
 }
 export function startRemovingPost(index, id){
-    return(dispatch) => {
-        return database.ref(`posts/${id}`).remove().then(()=>{
-            dispatch(removePost(index))
-        })
-    }
+       const updates = {
+         [`posts/${id}`]: null,
+         [`comments/${id}`]: null,
+         
+        }
+        return (dispatch) => {
+            return database.ref().update(updates).then(() => {
+                dispatch(removePost(index))
+                }).catch((error) => {
+                        console.log(error)
+                    })
+            }
+           
 }
 export function removePost(index){
     return {
@@ -62,10 +69,27 @@ export function loadPosts(posts){
         posts
     }
 }
+export function loadComments(comments){
+    return {
+        type:'LOAD_COMMENTS',
+        comments
+    }
+}
+export function startLoadingcomments(){
+    return (dispatch)=>{
+        database.ref('comments').once('value').then((snapshot)=>{
+            let comments ={}
+            snapshot.forEach((childSnapshot)=>{
+                comments[childSnapshot.key] = Object.values(childSnapshot.val())
+            })
+          dispatch(loadComments(comments))
+        })
+    }
+}
 export function startAddingcomment(comment, postId){
     return (dispatch) =>{
             return database.ref('comments/'+ postId).push(comment).then(()=>{
-                addComment(comment, postId)
+                dispatch(addComment(comment, postId))
             })
     }
 }

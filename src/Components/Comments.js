@@ -10,15 +10,13 @@ class Comments extends Component {
         
         event.preventDefault()
         const comment = event.target.elements.comment.value
-        //console.log(comment)
         this.props.startAddingcomment(comment,this.props.id)
         event.target.elements.comment.value =''
     }
     render() {
 
-        console.log(this.props.comments)
         return(
-        
+            
             <div className="comment">
                 
                  {

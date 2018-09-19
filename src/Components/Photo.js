@@ -17,7 +17,6 @@ function Photo(props) {
                     <div className="comment-count">
                         <div className="speech-bubble"></div>
                           {props.comments[post.id]?props.comments[post.id].length : 0}
-
                     </div>
                 </Link>
                 </div>
